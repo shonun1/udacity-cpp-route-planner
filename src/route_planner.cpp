@@ -64,7 +64,8 @@ bool Compare(RouteModel::Node *node_a, RouteModel::Node *node_b)
 
 RouteModel::Node *RoutePlanner::NextNode()
 {
-    sort(open_list.begin(), open_list.end(), Compare);
+    sort(open_list.begin(), open_list.end(), [](RouteModel::Node *a, RouteModel::Node *b)
+         { return (a->h_value + a->g_value) > (b->h_value + b->g_value); });
     RouteModel::Node *next = open_list.back();
     open_list.pop_back();
     return next;
@@ -114,7 +115,7 @@ void RoutePlanner::AStarSearch()
     while (open_list.size() > 0)
     {
         current_node = NextNode();
-        if (current_node->x == end_node->x && current_node->y == end_node->y)
+        if (current_node == end_node)
         {
             m_Model.path = ConstructFinalPath(current_node);
             return;
